@@ -1,0 +1,70 @@
+{% extends 'layout/base.html' %}
+
+{% block title %}Danh sách lớp{% endblock %}
+
+{% block content %}
+
+<div class="page-wrapper">
+    <div class="content container-fluid">
+        <div class="page-header">
+            <div class="row align-items-center">
+                <div class="col">
+                    <h3 class="page-title">Danh sách lớp</h3>
+                    <ul class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="#">Lớp</a></li>
+                        <li class="breadcrumb-item active">Danh sách lớp</li>
+                    </ul>
+                </div>
+                <div class="col-auto text-right float-right ml-auto">
+                    <a href="#" class="btn btn-outline-primary mr-2"><i class="fas fa-download"></i>Tải xuống</a>
+                    <a href="/themlop" class="btn btn-primary"><i class="fas fa-plus"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card card-table">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table id="dslop" class="table table-hover table-center mb-0 datatable">
+                                <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Tên lớp</th>
+                                    <th>Mã khối lớp</th>
+                                    <th>Chỉnh sửa</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for l in dslop %}
+                                <tr>
+                                    <td>{{ l.id }}</td>
+                                    <td>
+                                        <h2 class="table-avatar">
+                                            <a href="#">{{ l.tenLop }}</a>
+                                        </h2>
+                                    </td>
+                                    <td>{{ l.khoiLop_id }}</td>
+                                    <td>
+                                        <div class="actions">
+                                            <a href="edit-student.html" class="btn btn-sm bg-success-light mr-2">
+                                                <i class="fas fa-pen"></i>
+                                            </a>
+                                            <a href="#" class="btn btn-sm bg-danger-light">
+                                                <i class="fas fa-trash"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

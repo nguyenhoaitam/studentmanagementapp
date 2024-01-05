@@ -1,0 +1,82 @@
+{% extends 'layout/base.html' %}
+
+{% block title %}Danh sách học sinh{% endblock %}
+
+{% block content %}
+
+<div class="page-wrapper">
+    <div class="content container-fluid">
+        <div class="page-header">
+            <div class="row align-items-center">
+                <div class="col">
+                    <h3 class="page-title">Danh sách học sinh</h3>
+                    <ul class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="#">Học sinh</a></li>
+                        <li class="breadcrumb-item active">Danh sách học sinh</li>
+                    </ul>
+                </div>
+                <div class="col-auto text-right float-right ml-auto">
+                    <a href="#" class="btn btn-outline-primary mr-2"><i class="fas fa-download"></i>Tải xuống</a>
+                    <a href="/tiepnhan" class="btn btn-primary"><i class="fas fa-plus"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card card-table">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table id="dshocsinh" class="table table-hover table-center mb-0 datatable">
+                                <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Họ và tên</th>
+                                    <th>Ngày sinh</th>
+                                    <th>Giới tính</th>
+                                    <th>Địa chỉ</th>
+                                    <th>SĐT</th>
+                                    <th>Email</th>
+                                    <th>Ngày nhập học</th>
+                                    <th>Mã lớp</th>
+                                    <th>Chỉnh sửa</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for h in dshocsinh %}
+                                <tr>
+                                    <td>{{ h.id }}</td>
+                                    <td>
+                                        <h2 class="table-avatar">
+                                            <a href="#">{{ h.hoTen }}</a>
+                                        </h2>
+                                    </td>
+                                    <td>{{ h.ngaySinh }}</td>
+                                    <td>{{ h.gioiTinh }}</td>
+                                    <td>{{ h.diaChi }}</td>
+                                    <td>{{ h.soDT }}</td>
+                                    <td>{{ h.email }}</td>
+                                    <td>{{ h.ngayNhapHoc }}</td>
+                                    <td>{{ h.lop_id }}</td>
+                                    <td>
+                                        <div class="actions">
+                                            <a href="edit-student.html" class="btn btn-sm bg-success-light mr-2">
+                                                <i class="fas fa-pen"></i>
+                                            </a>
+                                            <a href="#" class="btn btn-sm bg-danger-light">
+                                                <i class="fas fa-trash"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

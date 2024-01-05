@@ -1,0 +1,102 @@
+{% extends 'layout/base.html' %}
+
+{% block title %}Tiếp nhận học sinh{% endblock %}
+
+{% block content %}
+
+<div class="page-wrapper">
+    <div class="content container-fluid">
+        <div class="page-header">
+            <div class="row align-items-center">
+                <div class="col">
+                    <h3 class="page-title">Tiếp nhận học sinh</h3>
+                    <ul class="breadcrumb">
+                        <li class="breadcrumb-item">Học sinh</li>
+                        <li class="breadcrumb-item active">Tiếp nhận học sinh</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        {% if err_msg %}
+        <div class="alert alert-danger">
+            {{err_msg}}
+        </div>
+        {% endif %}
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-body">
+                        <form method="post" action="/tiepnhan" enctype="multipart/form-data">
+                            <div class="row">
+                                <div class="col-12">
+                                    <h5 class="form-title"><span>Thông tin học sinh</span></h5>
+                                </div>
+                                <div class="col-12 col-sm-6">
+                                    <div class="form-group">
+                                        <label>Họ và tên</label>
+                                        <input type="text" name="hoten" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="col-12 col-sm-6">
+                                    <div class="form-group">
+                                        <label>Giới tính</label>
+                                        <select class="form-control" name="gioitinh">
+                                            <option>Chọn giới tính</option>
+                                            <option>Nam</option>
+                                            <option>Nữ</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-sm-6">
+                                    <div class="form-group">
+                                        <label>Ngày sinh</label>
+                                        <div>
+                                            <input type="date" name="ngaysinh" class="form-control">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-sm-6">
+                                    <div class="form-group">
+                                        <label>Địa chỉ</label>
+                                        <input type="text" name="diachi" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="col-12 col-sm-6">
+                                    <div class="form-group">
+                                        <label>Số điện thoại</label>
+                                        <input type="text" name="sodt" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="col-12 col-sm-6">
+                                    <div class="form-group">
+                                        <label>Email</label>
+                                        <input type="text" name="email" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="col-12 col-sm-6">
+                                    <div class="form-group">
+                                        <label>Ngày nhập học</label>
+                                        <div>
+                                            <input type="date" name="ngaynhaphoc" class="form-control">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-sm-6">
+                                    <div class="form-group">
+                                        <label>Mã lớp</label>
+                                        <input type="text" name="malop" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <button type="submit" class="btn btn-primary">Tiếp nhận</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

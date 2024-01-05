@@ -1,0 +1,16 @@
+{% extends 'admin/master.html' %}
+
+{% block head_css %}
+{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/custom_admin.css')}}">
+{% endblock %}
+
+{% block body %}
+
+{% if current_user.is_authenticated %}
+<h2 class="text-danger">Chào {{ current_user.name }}</h2>
+{% else %}
+<p>Vui lòng <a href="/login?next=/admin">Đăng nhập</a> để vào trang quản trị</p>
+{% endif %}
+
+{% endblock %}

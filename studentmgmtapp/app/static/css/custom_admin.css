@@ -1,0 +1,11 @@
+.navbar .navbar-expand-lg .navbar-dark .bg-dark .mb-2 {
+    background-color: #18aefa !important;
+}
+
+.bg-dark {
+    background-color: #18aefa !important;
+}
+
+.navbar-dark .navbar-nav .nav-link {
+    color: #fff;
+}

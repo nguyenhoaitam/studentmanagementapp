@@ -1,0 +1,129 @@
+
+<div class="header">
+    <div class="header-left">
+        <a href="/" class="logo">
+            <img src="https://res.cloudinary.com/dkmurrwq5/image/upload/v1704275768/logo_name.png" alt="Logo">
+        </a>
+        <a href="/" class="logo logo-small">
+            <img src="https://res.cloudinary.com/dkmurrwq5/image/upload/v1704274723/logo.png" alt="Logo" width="30" height="30">
+        </a>
+    </div>
+    <a href="javascript:void(0);" id="toggle_btn">
+        <i class="fas fa-align-left"></i>
+    </a>
+    <div class="top-nav-search">
+        <form method="get" action="/" name="kw">
+            <input type="text" class="form-control" placeholder="Tìm kiếm...">
+            <button class="btn" type="submit"><i class="fas fa-search"></i></button>
+        </form>
+    </div>
+    <a class="mobile_btn" id="mobile_btn">
+        <i class="fas fa-bars"></i>
+    </a>
+    <ul class="nav user-menu">
+        <li class="nav-item dropdown noti-dropdown">
+            <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
+                <i class="far fa-bell"></i> <span class="badge badge-pill">3</span>
+            </a>
+        </li>
+        <li class="nav-item dropdown has-arrow">
+            <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
+                    <span class="user-img">
+                        <img class="rounded-circle"
+                             src="https://res.cloudinary.com/dkmurrwq5/image/upload/v1704251718/user_ic.png" width="31"
+                             alt="Ryan Taylor">
+                    </span>
+            </a>
+            <div class="dropdown-menu">
+                <div class="user-header">
+                    <div class="avatar avatar-sm">
+                        <img src="https://res.cloudinary.com/dkmurrwq5/image/upload/v1704251718/user_ic.png"
+                             alt="User Image"
+                             class="avatar-img rounded-circle">
+                    </div>
+                    <div class="user-text">
+                        <h6>Admin</h6>
+                        <p class="text-muted mb-0">Quản trị viên</p>
+                    </div>
+                </div>
+                <a class="dropdown-item" href="profile.html">Hồ sơ</a>
+                <a class="dropdown-item" href="login.html">Đăng xuất</a>
+            </div>
+        </li>
+    </ul>
+</div>
+<div class="sidebar" id="sidebar">
+    <div class="sidebar-inner slimscroll">
+        <div id="sidebar-menu" class="sidebar-menu">
+            <ul>
+                <li class="menu-title">
+                    <span>Quản lý</span>
+                </li>
+                <li class="submenu active">
+                    <a href="#"><i class="fas fa-home"></i> <span>Trang chủ</span> <span class="menu-arrow"></span></a>
+                    <ul>
+                        <li><a href="#" class="active">Quản trị viên</a></li>
+                        <li><a href="#">Giáo viên</a></li>
+                        <li><a href="#">Nhân viên</a></li>
+                    </ul>
+                </li>
+                <li class="submenu">
+                    <a href="#"><i class="fas fa-user-graduate"></i> <span>Học sinh</span> <span class="menu-arrow"></span></a>
+                    <ul>
+                        <li><a href="/tiepnhan">Tiếp nhận học sinh</a></li>
+                        <li><a href="/dshocsinh">Danh sách học sinh</a></li>
+                    </ul>
+                </li>
+                <li class="submenu">
+                    <a href="#"><i class="fas fa-chalkboard-teacher"></i> <span>Giáo viên</span> <span class="menu-arrow"></span></a>
+                    <ul>
+                        <li><a href="add-teacher.html">Thêm giáo viên</a></li>
+                        <li><a href="teachers.html">Danh sách giáo viên</a></li>
+                    </ul>
+                </li>
+                <li class="submenu">
+                    <a href="#"><i class="fas fa-building"></i> <span>Lớp</span> <span class="menu-arrow"></span></a>
+                    <ul>
+                        <li><a href="add-department.html">Thêm lớp</a></li>
+                        <li><a href="/dslop">Danh sash lớp</a></li>
+                    </ul>
+                </li>
+                <li class="submenu">
+                    <a href="#"><i class="fas fa-book"></i> <span>Môn học</span> <span class="menu-arrow"></span></a>
+                    <ul>
+                        <li><a href="/themmon">Thêm môn học</a></li>
+                        <li><a href="/dsmonhoc">Danh sách môn học</a></li>
+                    </ul>
+                </li>
+                <li class="submenu">
+                    <a href="#"><i class="fas fa-book-reader"></i> <span>Điểm</span> <span class="menu-arrow"></span></a>
+                    <ul>
+                        <li><a href="#">Nhập điểm</a></li>
+                        <li><a href="#">Xuất điểm trung bình</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#"><i class="fas fa-chart-simple"></i><span>Báo cáo tổng kết</span></a>
+                </li>
+                <li>
+                    <a href="#"><i class="fas fa-gear"></i><span>Thay đổi quy định</span></a>
+                </li>
+                <li>
+                    <a href="/event"><i class="fas fa-calendar-day"></i><span>Sự kiện</span></a>
+                </li>
+                <li>
+                    <a href="#"><i class="fas fa-table"></i><span>Thời gian biểu</span></a>
+                </li>
+                <li class="submenu">
+                    <a href="#"><i class="fas fa-shield-alt"></i><span>Xác thực</span><span class="menu-arrow"></span></a>
+                    <ul>
+                        <li><a href="login.html">Đăng nhập</a></li>
+                        <li><a href="register.html">Đăng ký</a></li>
+                        <li><a href="forgot-password.html">Quên mật khẩu</a></li>
+                        <li><a href="error-404.html">Lỗi trang</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
