@@ -1,9 +1,11 @@
-from flask import render_template, redirect, request
-from flask_login import login_user
-from app.models import QuyDinh
 from datetime import datetime
-from app import app, login
+
+from flask import render_template, redirect, request
+from flask_login import login_user, logout_user
+
 import dao
+from app import app, login
+from app.models import QuyDinh
 
 """
 Các chức năng
@@ -66,10 +68,16 @@ def dang_nhap():
         if user:
             login_user(user=user)
 
-        next = request.args.get('next')
-        return redirect("/" if next is None else next)
+            next = request.args.get('next')
+            return redirect("/" if next is None else next)
 
     return render_template('login.html')
+
+
+@app.route('/logout')
+def dang_xuat():
+    logout_user()
+    return redirect("/")
 
 
 # 2.Tiếp nhận sinh viên
@@ -91,7 +99,8 @@ def tiepnhan():
 
         if tuoi > QuyDinh.tuoiToiThieu and tuoi < QuyDinh.tuoiToiDa:
             try:
-                dao.them_hoc_sinh(hoten=hoten, ngaysinh=ngaysinh, gioitinh=gioitinh, diachi=diachi, sodt=sodt, email=email, ngaynhaphoc=ngaynhaphoc, malop=malop)
+                dao.them_hoc_sinh(hoten=hoten, ngaysinh=ngaysinh, gioitinh=gioitinh, diachi=diachi, sodt=sodt,
+                                  email=email, ngaynhaphoc=ngaynhaphoc, malop=malop)
             except:
                 err_msg = 'Hệ thống đang bị lỗi!'
             else:
@@ -128,6 +137,17 @@ def dslop():
 @app.route("/themmon")
 def themmon():
     return render_template('themmon.html')
+
+
+# 13.Nhập điểm
+@app.route("/nhapdiem")
+def nhapdiem():
+    kw = request.args.get('kw')
+    dslop = dao.lay_ds_lop(kw)
+    dsmonhoc = dao.lay_ds_mon_hoc(kw)
+    return render_template('nhapdiem.html',
+                           dsmonhoc=dsmonhoc,
+                           dslop=dslop)
 
 
 # 14.Hiển thị danh sách môn học

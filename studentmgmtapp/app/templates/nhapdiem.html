@@ -1,0 +1,67 @@
+{% extends 'layout/base.html' %}
+
+{% block title %}Nhập điểm{% endblock %}
+
+{% block content %}
+<div class="page-wrapper">
+    <div class="content container-fluid">
+        <div class="page-header">
+            <div class="row align-items-center">
+                <div class="col">
+                    <h3 class="page-title">Điểm</h3>
+                    <ul class="breadcrumb">
+                        <li class="breadcrumb-item">Điểm</li>
+                        <li class="breadcrumb-item active">Nhập điểm</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        {% if err_msg %}
+        <div class="alert alert-danger">
+            {{err_msg}}
+        </div>
+        {% endif %}
+
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-body">
+                        <form method="post" action="/tiepnhan" enctype="multipart/form-data">
+                            <div class="row">
+                                <div class="col-12">
+                                    <h5 class="form-title"><span>Chọn môn và lớp</span></h5>
+                                </div>
+
+                                <div class="col-12 col-sm-6">
+                                    <div class="form-group">
+                                        <label>Chọn môn</label>
+                                        <select class="form-control" name="">
+                                            <option>Chọn môn</option>
+                                            {% for m in dsmonhoc %}
+                                            <option>{{ m.tenMon }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-12 col-sm-6">
+                                    <div class="form-group">
+                                        <label>Chọn lớp</label>
+                                        <select class="form-control" name="">
+                                            <option>Chọn lớp</option>
+                                            {% for l in dslop %}
+                                            <option>{{ l.tenLop }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+
+                            </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+        {% endblock %}

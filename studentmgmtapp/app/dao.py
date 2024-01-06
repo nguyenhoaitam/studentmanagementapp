@@ -1,4 +1,4 @@
-from app.models import TaiKhoan, HocSinh, Lop, MonHoc
+from app.models import TaiKhoan, HocSinh, Lop, MonHoc, VaiTroTaiKhoan
 from app import app, db
 import hashlib
 
@@ -39,6 +39,7 @@ def lay_ds_mon_hoc(kw=None):
         dsmonhoc = dsmonhoc.filter(MonHoc.tenMon.contains(kw))
 
     return dsmonhoc.all()
+
 
 def xac_thuc_user(username, password):
     password = str(hashlib.md5(password.strip().encode('utf-8')).hexdigest())
