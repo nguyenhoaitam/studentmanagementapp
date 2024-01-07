@@ -33,6 +33,10 @@ def lay_ds_lop(kw=None):
     return dslop.all()
 
 
+def lay_ds_lop_theo_id(id):
+    return db.session.get(Lop, id)
+
+
 def lay_ds_mon_hoc(kw=None):
     dsmonhoc = MonHoc.query
 
@@ -63,4 +67,4 @@ def dem_lop():
 
 if __name__ == '__main__':
     with app.app_context():
-        print(lay_si_so_toi_da())
+        print(lay_ds_lop_theo_id('1'))

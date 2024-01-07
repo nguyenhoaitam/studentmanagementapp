@@ -36,7 +36,7 @@
                                     <div class="form-group">
                                         <label>Chọn môn</label>
                                         <select class="form-control" name="">
-                                            <option>Chọn môn</option>
+                                            <option disabled selected>Chọn môn</option>
                                             {% for m in dsmonhoc %}
                                             <option>{{ m.tenMon }}</option>
                                             {% endfor %}
@@ -48,7 +48,7 @@
                                     <div class="form-group">
                                         <label>Chọn lớp</label>
                                         <select class="form-control" name="">
-                                            <option>Chọn lớp</option>
+                                            <option disabled selected>Chọn lớp</option>
                                             {% for l in dslop %}
                                             <option>{{ l.tenLop }}</option>
                                             {% endfor %}

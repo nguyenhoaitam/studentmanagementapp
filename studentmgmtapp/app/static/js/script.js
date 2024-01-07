@@ -452,4 +452,17 @@ $(document).ready(function () {
         }
     }
 
+$(document).ready(function(){
+    $('#closeModalBtn').click(function(){
+    $('#editModal').modal('hide');
+      closeModal();
+    });
+  });
+
+  function closeModal() {
+    // Thực hiện các hành động cần thiết khi modal được đóng
+    console.log('Nút "Close" đã được bấm');
+    // Gọi hàm hoặc thực hiện các hành động cụ thể tại đây
+  }
+
 //=======================================================================================================//

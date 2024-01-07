@@ -10,9 +10,9 @@ from app.models import Lop, HocSinh, QuyDinh
 """
 Các chức năng
 1.Đăng nhập
-2.Tiếp nhận học sinh
+2.Tiếp nhận học sinh ==> R
 3.Chỉnh sửa học sinh
-4.Hiển thị danh sách học sinh
+4.Hiển thị danh sách học sinh ==> R
 
 5.Thêm giáo viên
 6.Chỉnh sửa giáo viên
@@ -130,6 +130,8 @@ def tiepnhan():
 
     return render_template('tiepnhan.html', err_msg=err_msg)
 
+# 3.Chỉnh sửa học sinh
+
 
 # 4.Hiển thị danh sách học sinh
 @app.route("/dshocsinh")
@@ -152,13 +154,13 @@ def get_danh_sach_lop():
 # Route để lấy thông tin lớp học
 @app.route('/get_lop/<int:lop_id>', methods=['GET'])
 def get_lop(lop_id):
-    lop = Lop.query.get(lop_id)
+    lop = dao.lay_ds_lop_theo_id(lop_id)
     return jsonify({'id': lop.id, 'tenLop': lop.tenLop, 'siSo': lop.siSo})
 
 # Route để chỉnh sửa thông tin lớp học
 @app.route('/sua_lop/<int:lop_id>', methods=['POST'])
 def sua_lop(lop_id):
-    lop = Lop.query.get(lop_id)
+    lop = dao.lay_ds_lop_theo_id(lop_id)
 
     if request.method == 'POST':
         ten_lop_moi = request.form['ten_lop']
