@@ -28,11 +28,19 @@
         </li>
         <li class="nav-item dropdown has-arrow">
             <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
-                    <span class="user-img">
-                        <img class="rounded-circle"
-                             src="https://res.cloudinary.com/dkmurrwq5/image/upload/v1704275768/logo.png" width="31"
-                             alt="user">
-                    </span>
+                {% if current_user.is_authenticated %}
+                <span class="user-img">
+                    <img class="rounded-circle"
+                         src="https://res.cloudinary.com/dkmurrwq5/image/upload/v1704275768/logo.png" width="31"
+                         alt="user">
+                </span>
+                {% else %}
+                <span class="user-img">
+                    <img class="rounded-circle"
+                         src="https://res.cloudinary.com/dkmurrwq5/image/upload/v1704251718/user_ic.png" width="31"
+                         alt="user">
+                </span>
+                {% endif %}
             </a>
             {% if current_user.is_authenticated %}
             <div class="dropdown-menu">
@@ -84,21 +92,21 @@
                     <a href="#"><i class="fas fa-chalkboard-teacher"></i> <span>Giáo viên</span> <span
                             class="menu-arrow"></span></a>
                     <ul>
-                        <li><a href="add-teacher.html">Thêm giáo viên</a></li>
-                        <li><a href="teachers.html">Danh sách giáo viên</a></li>
+                        <li><a href="#">Thêm giáo viên</a></li>
+                        <li><a href="#">Danh sách giáo viên</a></li>
                     </ul>
                 </li>
                 <li class="submenu">
                     <a href="#"><i class="fas fa-building"></i> <span>Lớp</span> <span class="menu-arrow"></span></a>
                     <ul>
-                        <li><a href="add-department.html">Thêm lớp</a></li>
-                        <li><a href="/dslop">Danh sash lớp</a></li>
+                        <li><a href="#">Thêm lớp</a></li>
+                        <li><a href="/dslop">Danh sách lớp</a></li>
                     </ul>
                 </li>
                 <li class="submenu">
                     <a href="#"><i class="fas fa-book"></i> <span>Môn học</span> <span class="menu-arrow"></span></a>
                     <ul>
-                        <li><a href="/themmon">Thêm môn học</a></li>
+                        <li><a href="admin/monhoc">Thêm môn học</a></li>
                         <li><a href="/dsmonhoc">Danh sách môn học</a></li>
                     </ul>
                 </li>

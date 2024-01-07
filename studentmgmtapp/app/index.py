@@ -1,11 +1,11 @@
 from datetime import datetime
 
-from flask import render_template, redirect, request
+from flask import render_template, redirect, request, jsonify
 from flask_login import login_user, logout_user
 
 import dao
-from app import app, login
-from app.models import QuyDinh
+from app import app, login, db
+from app.models import Lop, HocSinh, QuyDinh
 
 """
 Các chức năng
@@ -18,7 +18,6 @@ Các chức năng
 6.Chỉnh sửa giáo viên
 7.Hiển thị danh sách giáo viên
 
-8.Thêm lớp
 9.Chỉnh sửa lớp
 10.Hiển thị danh sách lớp
 
@@ -44,6 +43,16 @@ def index():
 @login.user_loader
 def lay_tai_khoan(tai_khoan_id):
     return dao.lay_tai_khoan_theo_id(tai_khoan_id)
+
+
+# def login_required(f):
+#     @wraps(f)
+#     def decorated_function(*args, **kwargs):
+#         if not session.get("taiKhoan"):
+#
+#             return redirect(url_for('index', next=request.url))
+#         return f(*args, **kwargs)
+#     return decorated_function
 
 
 @app.route('/admin/login', methods=['post'])
@@ -82,6 +91,7 @@ def dang_xuat():
 
 # 2.Tiếp nhận sinh viên
 @app.route("/tiepnhan", methods=['get', 'post'])
+# @login_required
 def tiepnhan():
     err_msg = ""
     if request.method.__eq__('POST'):
@@ -94,19 +104,29 @@ def tiepnhan():
         ngaynhaphoc = request.form.get('ngaynhaphoc')
         malop = request.form.get('malop')
 
-        ngaysinh = datetime.strptime(ngaysinh, "%Y-%m-%d").date()
-        tuoi = datetime.now().year - ngaysinh.year
+        if hoten and gioitinh and ngaysinh and diachi and sodt and email and ngaynhaphoc and malop:
+            ngaysinh = datetime.strptime(ngaysinh, "%Y-%m-%d").date()
+            ngayhientai = datetime.now().year
 
-        if tuoi > QuyDinh.tuoiToiThieu and tuoi < QuyDinh.tuoiToiDa:
-            try:
-                dao.them_hoc_sinh(hoten=hoten, ngaysinh=ngaysinh, gioitinh=gioitinh, diachi=diachi, sodt=sodt,
-                                  email=email, ngaynhaphoc=ngaynhaphoc, malop=malop)
-            except:
-                err_msg = 'Hệ thống đang bị lỗi!'
+            tuoi = ngayhientai - ngaysinh.year
+
+            qd = dao.lay_quy_dinh()
+
+            tuoitoithieu = qd.tuoiToiThieu
+            tuoitoida = qd.tuoiToiDa
+            if tuoitoithieu < tuoi < tuoitoida:
+
+                try:
+                    dao.them_hoc_sinh(hoten=hoten, ngaysinh=ngaysinh, gioitinh=gioitinh, diachi=diachi, sodt=sodt,
+                                      email=email, ngaynhaphoc=ngaynhaphoc, malop=malop)
+                except:
+                    err_msg = 'Hệ thống đang bị lỗi!'
+                else:
+                    return redirect('/tiepnhan')
             else:
-                return redirect('/tiepnhan')
+                err_msg = 'Tuổi KHÔNG đúng quy định!Vui lòng kiểm tra và nhập lại'
         else:
-            err_msg = 'Tuổi KHÔNG đúng quy định!Vui lòng kiểm tra và nhập lại'
+            err_msg = 'Vui lòng nhập đầy đủ thông tin!'
 
     return render_template('tiepnhan.html', err_msg=err_msg)
 
@@ -122,6 +142,49 @@ def dshocsinh():
                            dshocsinh=dshocsinh)
 
 
+# 9.Chỉnh sửa lớp
+# Route để lấy danh sách lớp học
+@app.route('/get_danh_sach_lop', methods=['GET'])
+def get_danh_sach_lop():
+    danh_sach_lop = Lop.query.all()
+    return jsonify([{'id': lop.id, 'tenLop': lop.tenLop, 'siSo': lop.siSo} for lop in danh_sach_lop])
+
+# Route để lấy thông tin lớp học
+@app.route('/get_lop/<int:lop_id>', methods=['GET'])
+def get_lop(lop_id):
+    lop = Lop.query.get(lop_id)
+    return jsonify({'id': lop.id, 'tenLop': lop.tenLop, 'siSo': lop.siSo})
+
+# Route để chỉnh sửa thông tin lớp học
+@app.route('/sua_lop/<int:lop_id>', methods=['POST'])
+def sua_lop(lop_id):
+    lop = Lop.query.get(lop_id)
+
+    if request.method == 'POST':
+        ten_lop_moi = request.form['ten_lop']
+        si_so_moi = int(request.form['si_so'])
+
+        lop.tenLop = ten_lop_moi
+        lop.siSo = si_so_moi
+        db.session.commit()
+
+        return jsonify({'message': 'Thông tin lớp học đã được cập nhật thành công.'})
+
+
+# Route để xóa thông tin lớp học
+@app.route('/xoa_lop/<int:lop_id>', methods=['DELETE'])
+def xoa_lop(lop_id):
+    lop = Lop.query.get(lop_id)
+
+    if not lop:
+        return jsonify({'error': 'Lớp không tồn tại.'}), 404
+
+    db.session.delete(lop)
+    db.session.commit()
+
+    return jsonify({'message': 'Lớp học đã được xóa thành công.'})
+
+
 # 10.Hiển thị danh sách lớp
 @app.route("/dslop")
 def dslop():
@@ -131,6 +194,27 @@ def dslop():
 
     return render_template('dslop.html',
                            dslop=dslop)
+
+
+# Hiển thị theo từng lớp
+@app.route('/get_data', methods=['POST'])
+def get_data():
+    selected_class_id = request.form.get('selected_class_id')
+    data = db.session.query(Lop, HocSinh).join(HocSinh).filter(Lop.id == selected_class_id).all()
+
+    # Format data as a list of dictionaries
+    formatted_data = [
+        {
+            'id': hocsinh.id,
+            'tenHocSinh': hocsinh.hoTen,
+            'gioiTinh': hocsinh.gioiTinh,
+            'ngaySinh': hocsinh.ngaySinh,
+            'diaChi': hocsinh.diaChi
+        }
+        for lop, hocsinh in data
+    ]
+
+    return jsonify(formatted_data)
 
 
 # 11.Thêm môn học

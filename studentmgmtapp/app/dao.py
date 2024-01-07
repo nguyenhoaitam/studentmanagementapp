@@ -1,5 +1,6 @@
-from app.models import TaiKhoan, HocSinh, Lop, MonHoc, VaiTroTaiKhoan
+from app.models import TaiKhoan, HocSinh, Lop, MonHoc, VaiTroTaiKhoan, QuyDinh, KhoiLop
 from app import app, db
+from sqlalchemy import func
 import hashlib
 
 
@@ -41,7 +42,25 @@ def lay_ds_mon_hoc(kw=None):
     return dsmonhoc.all()
 
 
+def lay_quy_dinh():
+    qd = QuyDinh.query
+
+    return qd.first()
+
+
 def xac_thuc_user(username, password):
     password = str(hashlib.md5(password.strip().encode('utf-8')).hexdigest())
     return TaiKhoan.query.filter(TaiKhoan.username.__eq__(username.strip()),
                              TaiKhoan.password.__eq__(password)).first()
+
+# Danh sách lớp
+
+
+# Vẽ biểu đồ
+def dem_lop():
+    return db.session.query(KhoiLop.id, KhoiLop.tenKhoi, func.count(Lop.id)).join(Lop, Lop.khoiLop_id == KhoiLop.id, isouter=True).group_by(KhoiLop.id).all()
+
+
+if __name__ == '__main__':
+    with app.app_context():
+        print(lay_si_so_toi_da())

@@ -2,17 +2,17 @@ from flask import redirect
 from flask_admin import Admin, BaseView, expose,AdminIndexView
 from flask_admin.contrib.sqla import ModelView
 from flask_login import logout_user, current_user
-from app import app, db
+from app import app, db, dao
 from app.models import MonHoc, KhoiLop, Lop, QuyDinh, VaiTroTaiKhoan
 
 
-# class MyAdminIndex(AdminIndexView):
-#     @expose('/')
-#     def index(self):
-#         return self.render('admin/index.html')
+class MyAdminIndex(AdminIndexView):
+    @expose('/')
+    def index(self):
+        return self.render('admin/index.html', demlop=dao.dem_lop())
 
 
-admin = Admin(app=app, name='Quản trị', template_mode='bootstrap4')
+admin = Admin(app=app, name='Quản trị', template_mode='bootstrap4', index_view=MyAdminIndex())
 
 
 class xacThucAdminMo(ModelView):
@@ -36,6 +36,7 @@ class MonHocView(xacThucAdminMo):
     column_filters = ['tenMon']
     can_export = True
     can_view_details = True
+    # column_editable_list = ['id', 'tenMon']
     column_labels = {'id': 'Mã môn', 'tenMon': 'Tên môn'}
 
 

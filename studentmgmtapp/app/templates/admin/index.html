@@ -15,7 +15,64 @@
 
 {% if current_user.is_authenticated %}
 <h1 class="text-center text-info">CHÀO MỪNG ĐẾN TRANG QUẢN TRỊ!!!</h1>
-<h2 class="text-danger">Chào {{ current_user.username }}</h2>
+<h4 class="text-danger">Chào {{ current_user.username }}</h4>
+<br>
+<h5>Biểu đồ thống kê lớp học của khối</h5>
+<div class="row">
+    <div class="col-md-5">
+        <table class="table">
+            <tr>
+                <th>Id</th>
+                <th>Tên khối</th>
+                <th>Số lượng</th>
+            </tr>
+            {% for d in demlop %}
+            <tr>
+                <td>{{d[0]}}</td>
+                <td>{{d[1]}}</td>
+                <td>{{d[2]}}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    <div class="col-md-7">
+         <canvas id="myChart"></canvas>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    let data = [];
+    let labels = [];
+
+    {% for d in demlop %}
+    data.push({{d[2]}})
+    labels.push('{{d[1]}}')
+    {% endfor %}
+
+    window.onload = function() {
+    const ctx = document.getElementById('myChart');
+
+      new Chart(ctx, {
+        type: 'pie',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: '# Số lượng',
+            data: data,
+            borderWidth: 1
+          }]
+        },
+        options: {
+          scales: {
+            y: {
+              beginAtZero: true
+            }
+          }
+        }
+      });
+        }
+    </script>
 {% else %}
 {% block content %}
 
@@ -29,7 +86,7 @@
                 </div>
                 <div class="login-right">
                     <div class="login-right-wrap">
-                        <h1>Đăng nhâp</h1>
+                        <h1>Đăng nhập</h1>
                         <p class="account-subtitle">Truy cập vào trang quản trị</p>
                         {% if err_msg %}
                         <div class="alert alert-danger">
