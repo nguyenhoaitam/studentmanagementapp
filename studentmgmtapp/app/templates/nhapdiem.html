@@ -35,10 +35,10 @@
                                 <div class="col-12 col-sm-6">
                                     <div class="form-group">
                                         <label>Chọn môn</label>
-                                        <select class="form-control" name="">
+                                        <select class="form-control" name="chonmon">
                                             <option disabled selected>Chọn môn</option>
                                             {% for m in dsmonhoc %}
-                                            <option>{{ m.tenMon }}</option>
+                                            <option value="{{ m.id }}">{{ m.tenMon }}</option>
                                             {% endfor %}
                                         </select>
                                     </div>
@@ -47,21 +47,74 @@
                                 <div class="col-12 col-sm-6">
                                     <div class="form-group">
                                         <label>Chọn lớp</label>
-                                        <select class="form-control" name="">
+                                        <select class="form-control" name="chonlop" id="chonlop">
                                             <option disabled selected>Chọn lớp</option>
                                             {% for l in dslop %}
-                                            <option>{{ l.tenLop }}</option>
+                                            <option value="{{ l.id }}">{{ l.tenLop }}</option>
                                             {% endfor %}
                                         </select>
                                     </div>
                                 </div>
 
+                                <div class="col-12 col-sm-6">
+                                    <div class="form-group">
+                                        <label>Chọn học kỳ</label>
+                                        <select class="form-control" name="chonhocky" id="chonhocky">
+                                            <option disabled selected>Chọn học kỳ</option>
+                                            {% for h in dshocky %}
+                                            <option value="{{ h.id }}">{{ h.tenHocKy }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-12 col-sm-6">
+                                    <div class="form-group">
+                                        <label>Chọn năm học</label>
+                                        <select class="form-control" name="chonnamhoc" id="chonnamhoc">
+                                            <option disabled selected>Chọn năm học</option>
+                                            {% for n in dsnamhoc %}
+                                            <option value="{{ n.id }}">{{ n.tenNam }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
                             </div>
+                        </form>
                     </div>
                 </div>
             </div>
         </div>
+
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card card-table">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table id="bangnhapdiem" class="table table-hover table-center mb-0 datatable">
+                                <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Họ tên</th>
+                                    <th>Thông tin điểm</th>
+                                </tr>
+                                </thead>
+                                <tbody id="bd_bangnhapdiem">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6">
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary">Lưuhô</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 </div>
 
-        {% endblock %}
+
+{% endblock %}

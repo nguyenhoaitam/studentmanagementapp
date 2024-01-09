@@ -1,4 +1,4 @@
-from flask import redirect
+from flask import redirect, request, jsonify
 from flask_admin import Admin, BaseView, expose,AdminIndexView
 from flask_admin.contrib.sqla import ModelView
 from flask_login import logout_user, current_user
@@ -36,7 +36,6 @@ class MonHocView(xacThucAdminMo):
     column_filters = ['tenMon']
     can_export = True
     can_view_details = True
-    # column_editable_list = ['id', 'tenMon']
     column_labels = {'id': 'Mã môn', 'tenMon': 'Tên môn'}
 
 
@@ -51,25 +50,34 @@ class LopView(xacThucAdminMo):
     column_filters = ['tenLop', 'siSo']
     can_export = True
     can_view_details = True
-    column_labels = {'id': 'Mã lớp', 'tenLop': 'Tên lớp', 'siSo': 'Sĩ số', 'khoiLop_id': 'Tên khối'}
+    column_labels = {'id': 'Mã lớp', 'tenLop': 'Tên lớp', 'siSo': 'Sĩ số', 'khoiLop_id': 'Mã khối'}
 
 
 class QuyDinhView(xacThucAdminMo):
-    column_list = ['id', ' tuoiToiThieu', 'tuoiToiDa', 'siSoToiDa']
-    column_labels = {'id': 'Mã quy định', ' tuoiToiThieu': 'Tuổi tối thiếu', 'tuoiToiDa': 'Tuổi tối đa',
+    column_list = ['id', 'tuoiToiThieu', 'tuoiToiDa', 'siSoToiDa']
+    column_labels = {'id': 'Mã quy định', 'tuoiToiThieu': 'Tuổi tối thiếu', 'tuoiToiDa': 'Tuổi tối đa',
                      'siSoToiDa': 'Sĩ số tối đa của lớp'}
 
 
 class thongKeView(xacThucAdminBa):
     @expose('/')
     def index(self):
-        return self.render('admin/thongke.html')
+        dsmon = dao.lay_ds_mon_hoc()
+        idmonchon = request.args.get('tenmon')
+        tktheomon = dao.thong_ke_tung_mon_theo_lop(idmonchon)
+        tenmon = MonHoc.query.get(idmonchon)
+        return self.render('admin/thongke.html',
+                           dsmon=dsmon,
+                           tk=dao.thong_ke_mon_theo_lop(),
+                           tktheomon=tktheomon,
+                           tenmon=tenmon.tenMon)
 
 
 class veTrangChu(BaseView):
     @expose('/')
     def index(self):
         return self.render('index.html')
+
 
 class dangXuat(xacThucNguoiDungDN):
     @expose('/')

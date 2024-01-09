@@ -343,17 +343,17 @@ function hienThiDanhSachLopHoc() {
         url: '/get_danh_sach_lop',  // Địa chỉ API để lấy danh sách lớp học
         type: 'GET',
         success: function (data) {
-            var tableBody = $('#lop-table-body');
-            tableBody.empty();
-            data.forEach(function (lop) {
-                var row = '<tr>' +
-                          '<td>' + lop.id + '</td>' +
-                          '<td>' + lop.tenLop + '</td>' +
-                          '<td>' + lop.siSo + '</td>' +
-                          '<td><button class="btn-sua btn btn-warning" data-id="' + lop.id + '">Chỉnh Sửa</button></td>' +
-                          '</tr>';
-                tableBody.append(row);
-            });
+//            var tableBody = $('#lop-table-body');
+//            tableBody.empty();
+//            data.forEach(function (lop) {
+//                var row = '<tr>' +
+//                          '<td>' + lop.id + '</td>' +
+//                          '<td>' + lop.tenLop + '</td>' +
+//                          '<td>' + lop.siSo + '</td>' +
+//                          '<td><button class="btn-sua btn btn-warning" data-id="' + lop.id + '">Chỉnh Sửa</button></td>' +
+//                          '</tr>';
+//                tableBody.append(row);
+//            });
 
             // Bắt sự kiện khi nút "Chỉnh Sửa" được click
             $('.btn-sua').click(function () {
@@ -455,14 +455,128 @@ $(document).ready(function () {
 $(document).ready(function(){
     $('#closeModalBtn').click(function(){
     $('#editModal').modal('hide');
-      closeModal();
     });
   });
 
-  function closeModal() {
-    // Thực hiện các hành động cần thiết khi modal được đóng
-    console.log('Nút "Close" đã được bấm');
-    // Gọi hàm hoặc thực hiện các hành động cụ thể tại đây
-  }
-
 //=======================================================================================================//
+//Chỉnh sửa học sinh
+function hienThiDanhSachHocSinh() {
+    $.ajax({
+        url: '/get_ds_hoc_sinh',  // Địa chỉ API để lấy danh sách lớp học
+        type: 'GET',
+        success: function (data) {
+
+            // Bắt sự kiện khi nút "Chỉnh Sửa" được click
+            $('.btn-sua-hs').click(function () {
+                var hsid = $(this).data('id');
+                hienThiFormChinhSuaHS(hsid);
+            });
+        },
+        error: function (error) {
+            console.log(error);
+        }
+    });
+}
+
+// Function để hiển thị form chỉnh sửa thông tin học sinh
+function hienThiFormChinhSuaHS(hsId) {
+    $.ajax({
+        url: '/get_hoc_sinh/' + hsId,  // Địa chỉ API để lấy thông tin học sinh
+        type: 'GET',
+        success: function (data) {
+            // Hiển thị thông tin học sinh trong form
+            $('#hovaten').val(data.hoTen);
+            $('#ngaysinh').val(data.ngaySinh);
+            $('#gioitinh').val(data.gioiTinh);
+            $('#diachi').val(data.diaChi);
+            $('#sodienthoai').val(data.soDT);
+            $('#email').val(data.email);
+            $('#ngaynhaphoc').val(data.ngayNhapHoc);
+            $('#lopid').val(data.lop_id);
+
+            // Hiển thị modal chỉnh sửa
+            $('#chinhhs').modal('show');
+
+            // Bắt sự kiện khi nút "Lưu" được click
+            $('#formchinhhs').submit(function (e) {
+                e.preventDefault();
+                capNhatThongTinHocSinh(hsId);
+                $('#chinhhs').modal('hide');  // Ẩn modal sau khi cập nhật
+            });
+        },
+        error: function (error) {
+            console.log(error);
+        }
+    });
+}
+
+// Function để cập nhật thông tin học sinh
+function capNhatThongTinHocSinh(hocSinhId) {
+    var tenHSMoi = $('#hovaten').val();
+    var ngaySinhMoi = $('#ngaysinh').val();
+    var gioiTinhMoi = $('#gioitinh').val();
+    var diaChiMoi = $('#diachi').val();
+    var soDTMoi = $('#sodienthoai').val();
+    var emailMoi = $('#email').val();
+    var ngayNhapHocMoi = $('#ngaynhaphoc').val();
+    var lopIdMoi = $('#lopid').val();
+
+    $.ajax({
+        url: '/sua_hs/' + hocSinhId,  // Địa chỉ API để cập nhật thông tin lớp học
+        type: 'POST',
+        data: {'hoTen': tenHSMoi,
+         'ngaySinh': ngaySinhMoi,
+         'gioitinh': gioiTinhMoi,
+         'diaChi': diaChiMoi,
+         'soDT': soDTMoi,
+         'email': emailMoi,
+         'ngayNhapHoc': ngayNhapHocMoi,
+         'lop_id': lopIdMoi},
+        success: function (response) {
+            alert('Thông tin lớp học đã được cập nhật thành công.');
+        },
+        error: function (error) {
+            console.log(error);
+        }
+    });
+}
+
+//Nhập điểm
+$(document).ready(function () {
+        $('#chonlop').change(function () {
+            // Get the selected class ID
+            var selectedClassId = $(this).val();
+
+            // Make an AJAX request to get data for the selected class
+            $.ajax({
+                url: '/get_data',  // Replace with your Flask route
+                type: 'POST',
+                data: { 'selected_class_id': selectedClassId },
+                success: function (data) {
+                    // Update the table with the received data
+                    updateTable(data);
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            });
+        });
+
+        // Function to update the table with data
+        function updateTable(data) {
+            // Clear existing rows
+            $('#bangnhapdiem tbody').empty();
+
+            // Append new rows
+            data.forEach(function (row) {
+                var newRow = '<tr>' +
+                    '<td>' + row.id + '</td>' +
+                    '<td>' + row.tenHocSinh + '</td>' +
+                    '<td>' + '<input type="text" class="form-control">' + '</td>' +
+                    '<td>' + '<input type="text" class="form-control">' + '</td>' +
+                    '<td>' + '<input type="text" class="form-control">' + '</td>' +
+                    '</tr>';
+                $('#bangnhapdiem tbody').append(newRow);
+            });
+        }
+    });

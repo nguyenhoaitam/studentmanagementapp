@@ -7,4 +7,156 @@
 
 {% block body %}
 <h1 class="text-center text-info">THỐNG KÊ BÁO CÁO</h1>
+
+<h5>Thống kê số lượng đạt của tất cả môn</h5>
+<div class="row">
+    <div class="col-md-5">
+        <table class="table">
+            <tr>
+                <th>Tên lớp</th>
+                <th>Sỉ số</th>
+                <th>Số lượng đạt</th>
+                <th>Tỷ lệ</th>
+            </tr>
+            {% for t in tk %}
+            <tr>
+                <td>{{t[0]}}</td>
+                <td>{{t[1]}}</td>
+                <td>{{t[2]}}</td>
+                <td>{{"{:,.1f}".format(t[3])}} %</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    <div class="col-md-7">
+        <canvas id="myChart"></canvas>
+    </div>
+</div>
+
+<h5>Thống kê số lượng đạt môn cụ thể</h5>
+<div class="row">
+    <div class="col-md-5">
+        <form>
+            <select class="form-control" name="tenmon" id="tenmon">
+                <option selected disabled>Chọn môn</option>
+                {% for d in dsmon %}
+                <option value="{{ d.id }}">{{ d.tenMon }}</option>
+                {% endfor %}
+            </select>
+            <div class="col-12 col-sm-6">
+                <div class="form-group">
+                    <button style="margin: 10px 0 0;" type="submit" class="btn-thongke btn btn-primary">Thống kê
+                    </button>
+                </div>
+            </div>
+        </form>
+        <p>Thống kê tỷ lệ đạt môn của môn: <b>{{tenmon}}</b></p>
+        <table class="table">
+            <tr>
+                <th>Tên lớp</th>
+                <th>Sỉ số</th>
+                <th>Số lượng đạt</th>
+                <th>Tỷ lệ</th>
+            </tr>
+            {% for t in tktheomon %}
+            <tr>
+                <td>{{t[0]}}</td>
+                <td>{{t[1]}}</td>
+                <td>{{t[2]}}</td>
+                <td>{{"{:,.1f}".format(t[3])}} %</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    <div class="col-md-7">
+        <canvas id="myChart2"></canvas>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Hàm để tạo một màu ngẫu nhiên
+    function randomColor() {
+      var letters = '0123456789ABCDEF';
+      var color = '#';
+      for (var i = 0; i < 6; i++) {
+        color += letters[Math.floor(Math.random() * 16)];
+      }
+      return color;
+    }
+
+    let data = [];
+    let labels = [];
+    let colors = [];
+
+    let data2 = [];
+    let labels2 = [];
+    let colors2 = [];
+
+    {% for t in tk %}
+    data.push({{t[3]}})
+    labels.push('{{t[0]}}')
+    colors.push(randomColor());
+    {% endfor %}
+
+    {% for t in tktheomon %}
+    data2.push({{t[3]}})
+    labels2.push('{{t[0]}}')
+    colors2.push(randomColor());
+    {% endfor %}
+
+    window.onload = function() {
+        const ctx = document.getElementById('myChart');
+        const ctx2 = document.getElementById('myChart2');
+
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: '# Tỷ lệ',
+            data: data,
+            borderWidth: 1,
+            backgroundColor: colors
+          }]
+        },
+        options: {
+          scales: {
+            y: {
+              beginAtZero: true
+            }
+          }
+        }
+      });
+
+      new Chart(ctx2, {
+        type: 'bar',
+        data: {
+          labels: labels2,
+          datasets: [{
+            label: '# Tỷ lệ',
+            data: data,
+            borderWidth: 1,
+            backgroundColor: colors
+          }]
+        },
+        options: {
+          scales: {
+            y: {
+              beginAtZero: true
+            }
+          },
+          plugins: {
+            legend: {
+                title: {
+                    display: true,
+                    text: 'Biểu đồ số lượng đạt môn học theo lớp'  // Đặt tên cho biểu đồ
+                }
+    }
+}
+        }
+      });
+    }
+</script>
+
 {% endblock %}

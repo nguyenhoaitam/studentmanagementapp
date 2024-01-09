@@ -1,42 +1,43 @@
 from datetime import datetime
-
-from flask import render_template, redirect, request, jsonify
-from flask_login import login_user, logout_user
-
+from functools import wraps
+from flask import render_template, redirect, request, jsonify, abort, session, url_for
+from flask_login import login_user, logout_user, current_user, login_required
+from werkzeug.exceptions import Forbidden
 import dao
 from app import app, login, db
-from app.models import Lop, HocSinh, QuyDinh
+from app.models import Lop, HocSinh, QuyDinh, VaiTroTaiKhoan, MonHoc, HocKy, NamHoc
 
 """
 Các chức năng
 1.Đăng nhập
+
 2.Tiếp nhận học sinh ==> R
 3.Chỉnh sửa học sinh
 4.Hiển thị danh sách học sinh ==> R
 
-5.Thêm giáo viên
-6.Chỉnh sửa giáo viên
-7.Hiển thị danh sách giáo viên
+9.Chỉnh sửa lớp ==> R
+10.Hiển thị danh sách lớp ==> R
 
-9.Chỉnh sửa lớp
-10.Hiển thị danh sách lớp
-
-11.Thêm môn học
-12.Chỉnh sửa môn học(Xóa)
-13.Tìm kiếm môn học
-14.Hiển thị danh sách môn học
+11.Thêm môn học ==> R
+12.Chỉnh sửa môn học(Xóa) ==> R
+13.Tìm kiếm môn học ==> R
+14.Hiển thị danh sách môn học ==> R
 
 13.Nhập điểm
 14.Xuất điểm
 
 15.Báo cáo tổng kết
-16.Thay đổi quy định
+16.Thay đổi quy định  ==> R
 """
 
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    lops = Lop.query.all()
+    mons = MonHoc.query.all()
+    return render_template('index.html',
+                           lops=lops,
+                           mons=mons)
 
 
 # 1.Đăng nhập
@@ -44,31 +45,42 @@ def index():
 def lay_tai_khoan(tai_khoan_id):
     return dao.lay_tai_khoan_theo_id(tai_khoan_id)
 
+#Xác thực người dùng
+def check_role(role):
+    def decorator(function):
+        @wraps(function)
+        def wrapper(*args, **kwargs):
+            # import pdb
+            # pdb.set_trace()
+            if current_user.loaiTaiKhoan == VaiTroTaiKhoan(role):
+                return function(*args, **kwargs)
+            else:
+                # Lỗi 403 Forbidden
+                raise Forbidden('Bạn không có quyền truy cập vào chức năng này.')
 
-# def login_required(f):
-#     @wraps(f)
-#     def decorated_function(*args, **kwargs):
-#         if not session.get("taiKhoan"):
-#
-#             return redirect(url_for('index', next=request.url))
-#         return f(*args, **kwargs)
-#     return decorated_function
+        return wrapper
+    return decorator
 
 
 @app.route('/admin/login', methods=['post'])
 def dang_nhap_admin():
+    err_msg = ""
     username = request.form.get('username')
     password = request.form.get('password')
 
     user = dao.xac_thuc_user(username=username, password=password)
     if user:
         login_user(user=user)
+        return redirect('/admin')
+    else:
+        err_msg = 'Thông tin tài khoản không đúng vui lòng nhập lại!!!'
 
-    return redirect('/admin')
+    return render_template('login.html', err_msg=err_msg)
 
 
 @app.route("/login", methods=['get', 'post'])
 def dang_nhap():
+    err_msg = ""
     if request.method.__eq__('POST'):
         username = request.form.get('username')
         password = request.form.get('password')
@@ -79,8 +91,10 @@ def dang_nhap():
 
             next = request.args.get('next')
             return redirect("/" if next is None else next)
+        else:
+            err_msg = 'Thông tin tài khoản không đúng vui lòng nhập lại!!!'
 
-    return render_template('login.html')
+    return render_template('login.html', err_msg=err_msg)
 
 
 @app.route('/logout')
@@ -89,9 +103,10 @@ def dang_xuat():
     return redirect("/")
 
 
-# 2.Tiếp nhận sinh viên
+# 2.Tiếp nhận học sinh
 @app.route("/tiepnhan", methods=['get', 'post'])
-# @login_required
+@login_required
+@check_role(VaiTroTaiKhoan.STAFF)
 def tiepnhan():
     err_msg = ""
     if request.method.__eq__('POST'):
@@ -130,11 +145,76 @@ def tiepnhan():
 
     return render_template('tiepnhan.html', err_msg=err_msg)
 
+
 # 3.Chỉnh sửa học sinh
+# Route để lấy danh sách học sinh
+@app.route('/get_ds_hoc_sinh', methods=['GET'])
+def get_ds_hoc_sinh():
+    ds_hoc_sinh = HocSinh.query.all()
+    import pdb
+    pdb.set_trace()
+    return jsonify([{'id': hs.id,
+                     'hoTen': hs.hoTen,
+                     'ngaySinh': hs.ngaySinh,
+                     'gioitinh': hs.gioiTinh,
+                     'diaChi': hs.diaChi,
+                     'soDT': hs.soDT,
+                     'email': hs.email,
+                     'ngayNhapHoc': hs.ngayNhapHoc,
+                     'lop_id': hs.lop_id} for hs in ds_hoc_sinh])
+
+
+# Route để lấy thông tin học sinh
+@app.route('/get_hoc_sinh/<int:hs_id>', methods=['GET'])
+def get_hoc_sinh(hs_id):
+    hs = HocSinh.query.get(hs_id)
+    return jsonify({'id': hs.id,
+                    'hoTen': hs.hoTen,
+                    'ngaySinh': hs.ngaySinh,
+                    'gioiTinh': hs.gioiTinh,
+                    'diaChi': hs.diaChi,
+                    'soDT': hs.soDT,
+                    'email': hs.email,
+                    'ngayNhapHoc': hs.ngayNhapHoc,
+                    'lop_id': hs.lop_id})
+
+
+# Route để chỉnh sửa thông tin học sinh
+@app.route('/sua_hs/<int:hs_id>', methods=['POST'])
+def sua_hs(hs_id):
+    hs = HocSinh.query.get(hs_id)
+
+    if request.method == 'POST':
+        hs.hoTen = request.form.get('hoten')
+        hs.ngaySinh = request.form.get('ngaysinh')
+        hs.gioiTinh = request.form.get('gioitinh')
+        hs.diaChi = request.form.get('diachi')
+        hs.soDT = request.form.get('sodienthoai')
+        hs.email = request.form.get('email')
+        hs.ngayNhapHoc = request.form.get('ngaynhaphoc')
+        hs.lop_id = request.form.get('lopid')
+        db.session.commit()
+
+        return jsonify({'message': 'Thông tin lớp học đã được cập nhật thành công.'})
+
+
+# Route để xóa thông tin học sinh
+@app.route('/xoa_hs/<int:hs_id>', methods=['DELETE'])
+def xoa_hs(hs_id):
+    hs = dao.lay_ds_hs_theo_id(hs_id)
+
+    if not hs:
+        return jsonify({'error': 'Học sinh không tồn tại.'}), 404
+
+    db.session.delete(hs)
+    db.session.commit()
+
+    return jsonify({'message': 'Học sinh đã được xóa thành công.'})
 
 
 # 4.Hiển thị danh sách học sinh
 @app.route("/dshocsinh")
+@login_required
 def dshocsinh():
     kw = request.args.get('kw')
 
@@ -151,11 +231,13 @@ def get_danh_sach_lop():
     danh_sach_lop = Lop.query.all()
     return jsonify([{'id': lop.id, 'tenLop': lop.tenLop, 'siSo': lop.siSo} for lop in danh_sach_lop])
 
+
 # Route để lấy thông tin lớp học
 @app.route('/get_lop/<int:lop_id>', methods=['GET'])
 def get_lop(lop_id):
     lop = dao.lay_ds_lop_theo_id(lop_id)
     return jsonify({'id': lop.id, 'tenLop': lop.tenLop, 'siSo': lop.siSo})
+
 
 # Route để chỉnh sửa thông tin lớp học
 @app.route('/sua_lop/<int:lop_id>', methods=['POST'])
@@ -189,6 +271,7 @@ def xoa_lop(lop_id):
 
 # 10.Hiển thị danh sách lớp
 @app.route("/dslop")
+@login_required
 def dslop():
     kw = request.args.get('kw')
 
@@ -219,25 +302,32 @@ def get_data():
     return jsonify(formatted_data)
 
 
-# 11.Thêm môn học
-@app.route("/themmon")
-def themmon():
-    return render_template('themmon.html')
-
-
 # 13.Nhập điểm
-@app.route("/nhapdiem")
+@app.route("/nhapdiem", methods=['get', 'post'])
+@login_required
+@check_role(VaiTroTaiKhoan.TEACHER)
 def nhapdiem():
-    kw = request.args.get('kw')
-    dslop = dao.lay_ds_lop(kw)
-    dsmonhoc = dao.lay_ds_mon_hoc(kw)
+    dslop = Lop.query.all()
+    dsmonhoc = MonHoc.query.all()
+    dshocky = HocKy.query.all()
+    dsnamhoc = NamHoc.query.all()
     return render_template('nhapdiem.html',
                            dsmonhoc=dsmonhoc,
-                           dslop=dslop)
+                           dslop=dslop,
+                           dshocky=dshocky,
+                           dsnamhoc=dsnamhoc)
+
+
+#Lấy học sinh theo lớp
+@app.route('/classes/<int:class_id>/students')
+def layhstheolop(class_id):
+    students = HocSinh.query.filter_by(class_id=class_id).all()
+    return jsonify({'students': [student.to_dict() for student in students]})
 
 
 # 14.Hiển thị danh sách môn học
 @app.route("/dsmonhoc")
+@login_required
 def dsmonhoc():
     kw = request.args.get('kw')
 
@@ -245,6 +335,8 @@ def dsmonhoc():
 
     return render_template('dsmonhoc.html',
                            dsmonhoc=dsmonhoc)
+
+# 15. Báo cáo tổng kết
 
 
 if __name__ == '__main__':
